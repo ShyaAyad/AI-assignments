@@ -1,13 +1,15 @@
 export default function Tile({ value }) {
   return (
-    <div className="
-      w-20 h-20
-      flex items-center justify-center
-      text-2xl font-bold
-      bg-blue-500 text-white
-      rounded-xl shadow-md
-    ">
+    <motion.div
+      layout
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className={`
+        w-20 h-20 flex items-center justify-center
+        text-2xl font-bold rounded-xl shadow-md
+        ${value !== 0 ? "bg-blue-500 text-white" : "bg-gray-200"}
+      `}
+    >
       {value !== 0 ? value : ""}
-    </div>
+    </motion.div>
   );
 }
