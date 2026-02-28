@@ -10,7 +10,7 @@ export default function Board({ board }) {
     <div className="grid grid-cols-3 gap-3 p-4 bg-gray-100 rounded-xl">
       {board.map((row, rowIndex) =>
         row.map((num, colIndex) => (
-          <Tile key={${rowIndex}-${colIndex}} value={num} />
+          <Tile key={`${rowIndex}-${colIndex}`} value={num} />
         ))
       )}
     </div>
