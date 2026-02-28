@@ -1,43 +1,74 @@
 from fastapi import FastAPI
-from solver import dfs # import dfs function for solving the puzzle
-from utils import write_solution # write the result into a file 
+from fastapi.middleware.cors import CORSMiddleware
+from solver import dfs
+from utils import write_solution
 import time
 
 app = FastAPI()
 
-@app.get('/')
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
 def ok():
     return {"message": "API is working!"}
 
-@app.post('/solve') # api endpoint for sending the puzzle from the frontend and solve it in the backend
-def solve(data: dict):
-    board = tuple(data["board"])
-    
-    if(len(board) != 9):
-        return {"error": "Invalid board, board must contain 9 values"}
-    
+@app.post("/solve")
+async def solve(data: dict):
+    input_board = data.get("board")
+
+    if not input_board:
+        return {"error": "Board is required"}
+
+    try:
+        board = tuple(item for row in input_board for item in row)
+    except Exception:
+        return {"error": "Invalid board format"}
+
+    if len(board) != 9:
+        return {"error": "Board must contain 9 values"}
+
     if sorted(board) != list(range(9)):
         return {"error": "Invalid board values"}
 
-    # calculate how much it costs to solve the problem 
+    # Measure execution time
     start = time.time()
-    path, cost = dfs(board)
+
+    # Use depth limit
+    path, cost = dfs(board, depth_limit=50)
+
     end = time.time()
-    
-    executionTime = end - start
+    execution_time = end - start
 
     if path is None:
-        return {"error": "No solution found"}
+        return {
+            "status": "error",
+            "message": "No solution found within depth limit"
+        }
 
-    # Convert path to simple list format for frontend
-    steps = [list(state.board) for state in path]
+    # Convert solution steps into 3x3 format 
+    formatted_steps = []
+    for state in path:
+        b = state.board
+        step_board = [
+            list(b[0:3]),
+            list(b[3:6]),
+            list(b[6:9])
+        ]
+        formatted_steps.append(step_board)
 
     result = {
-        "steps": steps,
+        "status": "success",
+        "solution": formatted_steps,
         "cost": cost,
-        "duration": executionTime
+        "duration": execution_time
     }
 
+    # Save result to file
     write_solution(result)
 
     return result
