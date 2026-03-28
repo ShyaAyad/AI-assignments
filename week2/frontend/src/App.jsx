@@ -2,17 +2,21 @@ import { useState, useEffect } from "react";
 import Board from "./components/Board";
 import Controls from "./components/Controls";
 import StepViewer from "./components/StepViewer";
+import SolvedPopup from "./components/SolvedPopup";
 import { solvePuzzle } from "./api";
 
 function generateRandomBoard() {
   // Start at the solved goal state
-  let board = [[1, 2, 3], [4, 5, 6], [7, 8, 0]];
+  let board = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 0],
+  ];
 
   //Find the blank tile (0)
   const findBlank = (b) => {
     for (let r = 0; r < 3; r++)
-      for (let c = 0; c < 3; c++)
-        if (b[r][c] === 0) return [r, c];
+      for (let c = 0; c < 3; c++) if (b[r][c] === 0) return [r, c];
   };
 
   // Perform 50 random valid moves to scramble the board
@@ -26,7 +30,7 @@ function generateRandomBoard() {
 
     // Pick a random neighbor to swap with
     const [nr, nc] = moves[Math.floor(Math.random() * moves.length)];
-    
+
     // Swap tiles
     [board[r][c], board[nr][nc]] = [board[nr][nc], board[r][c]];
   }
@@ -43,6 +47,13 @@ function App() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [showSolved, setShowSolved] = useState(false);
+  useEffect(() => {
+    if (steps && currentStepIndex === steps.length - 1) {
+      setShowSolved(true);
+    }
+  }, [currentStepIndex, steps]);
+
   useEffect(() => {
     let interval;
     if (isPlaying && steps && currentStepIndex < steps.length - 1) {
@@ -56,6 +67,7 @@ function App() {
   }, [isPlaying, currentStepIndex, steps]);
 
   const handleSolve = async () => {
+    setShowSolved(false);
     setError(null);
     setLoading(true);
     try {
@@ -74,6 +86,7 @@ function App() {
   };
 
   const handleNewGame = () => {
+    setShowSolved(false);
     setBoard(generateRandomBoard());
     setSteps(null);
     setCurrentStepIndex(0);
@@ -82,24 +95,24 @@ function App() {
 
   return (
     <div className="flex flex-col items-center p-10">
-      <h1 className="text-3xl font-bold mb-6">8-Puzzle Solver</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      
+      <h1 className="mb-6 text-3xl font-bold">8-Puzzle Solver</h1>
+      {error && <p className="mb-4 text-red-500">{error}</p>}
+
       {/* Renders solved steps if available, otherwise shows the current board */}
       <Board board={steps ? steps[currentStepIndex] : board} />
-      
-      <div className="mt-6 flex gap-4">
+
+      <div className="flex gap-4 mt-6">
         <Controls onSolve={handleSolve} />
-        <button 
+        <button
           onClick={handleNewGame}
-          className="bg-yellow-500 text-white px-4 py-2 rounded-xl font-bold hover:bg-yellow-600 transition"
+          className="px-4 py-2 font-bold text-white transition bg-yellow-500 rounded-xl hover:bg-yellow-600"
         >
           New Game
         </button>
       </div>
-      
+
       {steps && (
-        <StepViewer 
+        <StepViewer
           steps={steps}
           currentStepIndex={currentStepIndex}
           setCurrentStepIndex={setCurrentStepIndex}
@@ -107,6 +120,8 @@ function App() {
           setIsPlaying={setIsPlaying}
         />
       )}
+      
+      {showSolved && <SolvedPopup onClose={() => setShowSolved(false)} />}
     </div>
   );
 }

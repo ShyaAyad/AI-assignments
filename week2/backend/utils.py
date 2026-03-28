@@ -21,6 +21,7 @@ def write_solution(result):
         initial = steps[0] # initial board
         
         # only for priting the board in a good format 
+        # num:2 means 2 spaces for each number, this makes the board look nicer
         for row in initial:
             f.write(" ".join(f"{num:2}" for num in row) + "\n")
         f.write("\n")
