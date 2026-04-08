@@ -70,7 +70,7 @@ export default function BookArrangementCalculator() {
               Dynamic Programming
             </p>
             <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-900">
-              Book Arrangement Calculator
+              Book Arrangement Calculator 📚
             </h1>
             <p className="mt-3 max-w-2xl text-base text-slate-600">
               Enter the total number of books and the group size to calculate
@@ -83,7 +83,7 @@ export default function BookArrangementCalculator() {
               <div className="grid gap-5 md:grid-cols-2">
                 <label className="block">
                   <span className="mb-2 block text-sm font-semibold text-slate-700">
-                    Total Books (n)
+                    Total Books (n) 📚
                   </span>
                   <input
                     type="number"
@@ -98,7 +98,7 @@ export default function BookArrangementCalculator() {
 
                 <label className="block">
                   <span className="mb-2 block text-sm font-semibold text-slate-700">
-                    Group Size (r)
+                    Group Size (r) 📖
                   </span>
                   <input
                     type="number"
@@ -118,7 +118,7 @@ export default function BookArrangementCalculator() {
                   disabled={loading}
                   className="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/15 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
                 >
-                  {loading ? "Calculating..." : "Calculate Arrangement"}
+                  {loading ? "Calculating... ⏳" : "Calculate Arrangement"}
                 </button>
               </div>
             </form>
@@ -131,7 +131,7 @@ export default function BookArrangementCalculator() {
 
             {result !== null && (
               <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-lg font-semibold text-emerald-700">
-                Result: {result}
+                Result: {result} 
               </div>
             )}
           </div>
@@ -140,4 +140,3 @@ export default function BookArrangementCalculator() {
     </div>
   );
 }
-
