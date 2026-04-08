@@ -4,9 +4,11 @@ def build_dp_table(n: int, r: int) -> list:
     for i in range(n + 1):
         for j in range(r + 1):
             if j == 0:
-                table[i][j] = 1 # base case there's one way to arrange 0 books so we do nothing
+                # base case there's one way to arrange 0 books so we do nothing
+                table[i][j] = 1
             elif i == 0:
-                table[i][j] = 0 # base case cannot arrange anything if we have no books
+                # base case cannot arrange anything if we have no books
+                table[i][j] = 0
             else:
                 table[i][j] = i * table[i - 1][j - 1]
 
@@ -18,8 +20,8 @@ def compute_permutation(n: int, r: int) -> dict:
 
     # sending back the result and the table for frontend to display
     return {
-        "n"     : n,
-        "r"     : r,
+        "n": n,
+        "r": r,
         "result": table[n][r],
-        "table" : table,
+        "table": table,
     }
