@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { solvePermutation } from "./api";
 
-const API_URL = "/api/solve";
+const API_URL = "http://127.0.0.1:8000/solve";
 
 export default function App() {
   const [n, setN] = useState("");
   const [r, setR] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [table, setTable] = useState(null);
+
 
   async function calculateArrangement(event) {
     event.preventDefault();
@@ -46,9 +50,13 @@ export default function App() {
 
       const payload = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || payload.error) {
         throw new Error(payload.error || "Failed to calculate book arrangements.");
       }
+
+      // STORE RESULT FROM BACKEND
+      setResult(payload.result);
+      setTable(payload.table);
     } catch (requestError) {
       setError(requestError.message || "Unable to connect to the API.");
     } finally {
@@ -123,6 +131,12 @@ export default function App() {
                 {error}
               </div>
             ) : null}
+
+            {result !== null && (
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-lg font-semibold text-emerald-700">
+                Result: {result}
+              </div>
+            )}
           </div>
         </div>
       </div>
