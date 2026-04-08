@@ -18,9 +18,9 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
     const groupSize = Number(r);
 
     if (
-      !Number.isInteger(totalBooks) 
-      !Number.isInteger(groupSize) 
-      totalBooks < 0 
+      !Number.isInteger(totalBooks) ||
+      !Number.isInteger(groupSize) ||
+      totalBooks < 0 ||
       groupSize < 0
     ) {
       setError("Please enter valid whole numbers for n and r.");
@@ -49,8 +49,8 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
 
       const payload = await response.json();
 
-      if (!response.ok  payload.error) {
-        throw new Error(payload.error  "Failed to calculate book arrangements.");
+      if (!response.ok || payload.error) {
+        throw new Error(payload.error || "Failed to calculate book arrangements.");
       }
 
       setResult(payload.result);
@@ -59,7 +59,7 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
       // ✅ ADDITION 2: send the table data up to App.jsx
       onTableReady(totalBooks, groupSize, payload.result, payload.table);
     } catch (requestError) {
-      setError(requestError.message  "Unable to connect to the API.");
+      setError(requestError.message || "Unable to connect to the API.");
     } finally {
       setLoading(false);
     }
@@ -99,3 +99,58 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
                     className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                   />
                 </label>
+
+                <label className="block">
+                  <span className="mb-2 block text-sm font-semibold text-slate-700">
+                    Group Size (r) 📖
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={r}
+                    onChange={(event) => setR(event.target.value)}
+                    placeholder="Enter group size"
+                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                  />
+                </label>
+              </div>
+
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/15 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                >
+                  {loading ? "Calculating... ⏳" : "Calculate Arrangement"}
+                </button>
+              </div>
+            </form>
+
+            {error ? (
+              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+                {error}
+              </div>
+            ) : null}
+
+            {result !== null && (
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-lg font-semibold text-emerald-700">
+                Result: {result}
+
+                {/* ✅ ADDITION 3: button to open the DP table modal */}
+                <div className="mt-4">
+                  <button
+                    onClick={onViewTable}
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                  >
+                    📊 View DP Table
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
