@@ -1,4 +1,3 @@
-TableModal.jsx
 // ── Your contribution: DP table modal window ───────────────────────────────
 
 export default function TableModal({ n, r, result, table, onClose }) {
@@ -90,6 +89,7 @@ export default function TableModal({ n, r, result, table, onClose }) {
             </tbody>
           </table>
         </div>
+
         {/* Legend */}
         <div className="border-t border-slate-200 bg-slate-50 px-6 py-4 space-y-2">
           <div className="flex items-center gap-2 text-sm text-slate-700">
@@ -103,9 +103,6 @@ export default function TableModal({ n, r, result, table, onClose }) {
             <span className="inline-block h-4 w-4 rounded-sm bg-blue-300" />
             <span>Column / row headers</span>
           </div>
-          <p className="pt-1 font-mono text-xs text-slate-500">
-            Recurrence: dp[i][j] = i × dp[i-1][j-1], dp[i][0] = 1
-          </p>
         </div>
 
       </div>
