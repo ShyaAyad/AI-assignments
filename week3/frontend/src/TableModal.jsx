@@ -1,9 +1,7 @@
-// ── Your contribution: DP table modal window ───────────────────────────────
-
 export default function TableModal({ n, r, result, table, onClose }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
@@ -11,10 +9,10 @@ export default function TableModal({ n, r, result, table, onClose }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="border-b border-slate-200 bg-slate-50 px-6 py-5">
+        <div className="px-6 py-5 border-b border-slate-200 bg-slate-50">
           <button
             onClick={onClose}
-            className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300"
+            className="absolute flex items-center justify-center w-8 h-8 rounded-full right-5 top-5 bg-slate-200 text-slate-600 hover:bg-slate-300"
           >
             ✕
           </button>
@@ -27,17 +25,17 @@ export default function TableModal({ n, r, result, table, onClose }) {
         </div>
 
         {/* Table */}
-        <div className="overflow-auto p-6">
-          <table className="w-full border-collapse text-center font-mono text-sm">
+        <div className="p-6 overflow-auto">
+          <table className="w-full font-mono text-sm text-center border-collapse">
             <thead>
               <tr>
-                <th className="rounded-tl-lg bg-blue-300 px-4 py-3 text-xs font-semibold text-blue-900">
+                <th className="px-4 py-3 text-xs font-semibold text-blue-900 bg-blue-300 rounded-tl-lg">
                   n \ r
                 </th>
                 {Array.from({ length: r + 1 }, (_, j) => (
                   <th
                     key={j}
-                    className="bg-blue-300 px-4 py-3 text-sm font-bold text-blue-900 last:rounded-tr-lg"
+                    className="px-4 py-3 text-sm font-bold text-blue-900 bg-blue-300 last:rounded-tr-lg"
                   >
                     {j}
                   </th>
@@ -91,16 +89,16 @@ export default function TableModal({ n, r, result, table, onClose }) {
         </div>
 
         {/* Legend */}
-        <div className="border-t border-slate-200 bg-slate-50 px-6 py-4 space-y-2">
+        <div className="px-6 py-4 space-y-2 border-t border-slate-200 bg-slate-50">
           <div className="flex items-center gap-2 text-sm text-slate-700">
-            <span className="inline-block h-4 w-4 rounded-sm bg-yellow-400" />
+            <span className="inline-block w-4 h-4 bg-yellow-400 rounded-sm" />
             <span>
               Solution cell — P({n}, {r}) ={" "}
               <strong>{result.toLocaleString()}</strong>
             </span>
           </div>
           <div className="flex items-center gap-2 text-sm text-slate-700">
-            <span className="inline-block h-4 w-4 rounded-sm bg-blue-300" />
+            <span className="inline-block w-4 h-4 bg-blue-300 rounded-sm" />
             <span>Column / row headers</span>
           </div>
         </div>

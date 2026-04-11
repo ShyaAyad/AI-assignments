@@ -8,7 +8,6 @@ export default function App() {
 
   return (
     <>
-      {/* Friend's original component — now receives onTableReady so it can send us the table data */}
       <BookArrangementCalculator
         onTableReady={(n, r, result, table) => {
           setTableData({ n, r, result, table });
@@ -16,7 +15,6 @@ export default function App() {
         onViewTable={() => setShowTable(true)}
       />
 
-      {/* Your DP table modal */}
       {showTable && tableData && (
         <TableModal
           n={tableData.n}

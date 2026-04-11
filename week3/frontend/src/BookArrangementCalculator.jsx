@@ -1,8 +1,8 @@
 import { useState } from "react";
+import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/solve";
 
-// ✅ ADDITION 1: accept onTableReady and onViewTable props from App.jsx
 export default function BookArrangementCalculator({ onTableReady, onViewTable }) {
   const [n, setN] = useState("");
   const [r, setR] = useState("");
@@ -36,27 +36,21 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
     setError("");
 
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          n: totalBooks,
-          r: groupSize,
-        }),
+
+      const response = await axios.post(API_URL, {
+        n: totalBooks,
+        r: groupSize,
       });
 
-      const payload = await response.json();
+      const payload = response.data;
 
-      if (!response.ok || payload.error) {
+      if (payload.error) {
         throw new Error(payload.error || "Failed to calculate book arrangements.");
       }
 
       setResult(payload.result);
       setTable(payload.table);
 
-      // ✅ ADDITION 2: send the table data up to App.jsx
       onTableReady(totalBooks, groupSize, payload.result, payload.table);
     } catch (requestError) {
       setError(requestError.message || "Unable to connect to the API.");
@@ -67,26 +61,26 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
 
   return (
     <div className="min-h-screen bg-slate-100 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.12),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(16,185,129,0.10),_transparent_22%)] px-4 py-10 text-slate-900">
-      <div className="mx-auto max-w-3xl">
+      <div className="max-w-3xl mx-auto">
         <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.10)]">
-          <div className="border-b border-slate-200 bg-slate-50/80 px-8 py-8">
+          <div className="px-8 py-8 border-b border-slate-200 bg-slate-50/80">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">
               Dynamic Programming
             </p>
             <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-900">
               Book Arrangement Calculator 📚
             </h1>
-            <p className="mt-3 max-w-2xl text-base text-slate-600">
+            <p className="max-w-2xl mt-3 text-base text-slate-600">
               Enter the total number of books and the group size to calculate
               the arrangement count.
             </p>
           </div>
 
-          <div className="space-y-8 px-8 py-8">
+          <div className="px-8 py-8 space-y-8">
             <form onSubmit={calculateArrangement} className="space-y-6">
               <div className="grid gap-5 md:grid-cols-2">
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-slate-700">
+                  <span className="block mb-2 text-sm font-semibold text-slate-700">
                     Total Books (n) 📚
                   </span>
                   <input
@@ -96,12 +90,12 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
                     value={n}
                     onChange={(event) => setN(event.target.value)}
                     placeholder="Enter total books"
-                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                    className="w-full px-4 py-3 text-base transition bg-white border shadow-sm outline-none rounded-2xl border-slate-300 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                   />
                 </label>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-slate-700">
+                  <span className="block mb-2 text-sm font-semibold text-slate-700">
                     Group Size (r) 📖
                   </span>
                   <input
@@ -111,7 +105,7 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
                     value={r}
                     onChange={(event) => setR(event.target.value)}
                     placeholder="Enter group size"
-                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                    className="w-full px-4 py-3 text-base transition bg-white border shadow-sm outline-none rounded-2xl border-slate-300 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                   />
                 </label>
               </div>
@@ -120,7 +114,7 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/15 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                  className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-white transition shadow-lg rounded-2xl bg-slate-900 shadow-slate-900/15 hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
                 >
                   {loading ? "Calculating... ⏳" : "Calculate Arrangement"}
                 </button>
@@ -128,20 +122,19 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
             </form>
 
             {error ? (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+              <div className="px-4 py-3 text-sm font-medium border rounded-2xl border-rose-200 bg-rose-50 text-rose-700">
                 {error}
               </div>
             ) : null}
 
             {result !== null && (
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-lg font-semibold text-emerald-700">
+              <div className="px-4 py-4 text-lg font-semibold border rounded-2xl border-emerald-200 bg-emerald-50 text-emerald-700">
                 Result: {result}
 
-                {/* ✅ ADDITION 3: button to open the DP table modal */}
                 <div className="mt-4">
                   <button
                     onClick={onViewTable}
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition bg-white border shadow-sm rounded-xl border-slate-300 text-slate-700 hover:bg-slate-50"
                   >
                     📊 View DP Table
                   </button>
