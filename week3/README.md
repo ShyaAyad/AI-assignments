@@ -5,9 +5,9 @@ A system that calculates the number of ways to arrange a subset of books from a 
 ## How It Works
 The system runs a pipeline of components to deliver the result:
 
-1. **Input Interface Agent** – A React-based form that captures the total number of books ($n$) and the group size ($r$).
-2. **Communication Agent** – Handles the asynchronous API requests between the frontend and the Python backend.
-3. **DP Table Agent** – A backend logic layer that constructs a 2D Dynamic Programming table to solve permutation sub-problems efficiently.
+1. **Input Interface** – A React-based form that captures the total number of books ($n$) and the group size ($r$).
+2. **Communication** – Handles the asynchronous API requests between the frontend and the Python backend.
+3. **DP Table** – A backend logic layer that constructs a 2D Dynamic Programming table to solve permutation sub-problems efficiently.
 4. **Permutation Solver** – Calculates the final arrangement count based on the populated DP table.
 5. **Visualization Agent** – Renders the final result and provides an interactive modal to explore the full DP matrix.
 
@@ -61,8 +61,8 @@ week3/
 ├── frontend/
 │   ├── src/
 │   │   ├── App.jsx          # Root Component — manages state and layout
-│   │   ├── BookArrangementCalculator.jsx # UI Agent — input form & result display
-│   │   ├── TableModal.jsx   # Visualization Agent — renders the DP Table
+│   │   ├── BookArrangementCalculator.jsx # UI — input form & result display
+│   │   ├── TableModal.jsx   # Visualization — renders the DP Table
 │   │   ├── api.js           # API Helper — manages network requests
 │   │   └── main.jsx         # Entry point — mounts the React application
 │   ├── package.json         # Project metadata and dependencies
