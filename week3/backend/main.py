@@ -13,14 +13,15 @@ app = FastAPI()
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # later you can restrict this
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"],  # allows requests from any origin
+    allow_credentials=True,  # allows cookies
+    allow_methods=["*"],  # allows all HTTP methods
+    allow_headers=["*"],  # allows all headers in request
 )
 
 
-# Request format from frontend
+# A data model for incoming json requests
+# specifies that the request must contain n (integer) and r (integer)
 class InputData(BaseModel):
     n: int
     r: int
@@ -48,8 +49,6 @@ def solve(data: InputData):
     if n == 0 and r > 0:
         return {"error": "Cannot choose books from zero total books"}
 
-    # CALL YOUR LOGIC
     result_data = compute_permutation(n, r)
 
-    # SEND BACK TO FRONTEND
     return result_data

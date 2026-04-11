@@ -1,4 +1,5 @@
 def build_dp_table(n: int, r: int) -> list:
+    # creates a (n+1)x(r+1)2D table
     table = [[0] * (r + 1) for _ in range(n + 1)]
 
     for i in range(n + 1):

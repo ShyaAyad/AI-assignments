@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { solvePermutation } from "./api";
 
 const API_URL = "http://127.0.0.1:8000/solve";
 
@@ -27,22 +28,12 @@ export default function BookArrangementCalculator({ onTableReady, onViewTable })
       return;
     }
 
-    if (groupSize > totalBooks) {
-      setError("Group Size (r) cannot be greater than Total Books (n).");
-      return;
-    }
-
     setLoading(true);
     setError("");
 
     try {
 
-      const response = await axios.post(API_URL, {
-        n: totalBooks,
-        r: groupSize,
-      });
-
-      const payload = response.data;
+      const payload = await solvePermutation(totalBooks, groupSize);
 
       if (payload.error) {
         throw new Error(payload.error || "Failed to calculate book arrangements.");
