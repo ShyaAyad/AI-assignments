@@ -1,0 +1,54 @@
+# pip install fastapi uvicorn
+# to run: python -m uvicorn main:app --reload
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
+from permutation import compute_permutation
+
+app = FastAPI()
+
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allows requests from any origin
+    allow_credentials=True,  # allows cookies
+    allow_methods=["*"],  # allows all HTTP methods
+    allow_headers=["*"],  # allows all headers in request
+)
+
+
+# A data model for incoming json requests
+# specifies that the request must contain n (integer) and r (integer)
+class InputData(BaseModel):
+    n: int
+    r: int
+
+
+@app.get("/")
+def home():
+    return {"message": "Permutation API is running"}
+
+# API endpoint
+
+
+@app.post("/solve")
+def solve(data: InputData):
+    n = data.n
+    r = data.r
+
+    # VALIDATION
+    if n < 0 or r < 0:
+        return {"error": "Numbers must be non-negative"}
+
+    if r > n:
+        return {"error": "Group size cannot exceed total books"}
+
+    if n == 0 and r > 0:
+        return {"error": "Cannot choose books from zero total books"}
+
+    result_data = compute_permutation(n, r)
+
+    return result_data
