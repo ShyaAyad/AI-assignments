@@ -6,9 +6,6 @@ import asyncio
 import uuid
 import random
 
-from crossover import crossover, fill_row
-from fitness import evaluate_fitness
-from mutation import mutate
 from ga_engine import genetic_algorithm
 
 app = FastAPI(title="Sudoku GA Solver")
@@ -21,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# random board generation
+# checking if the number is placed in a correct cell
 def _is_valid_placement(board, row, col, num):
     if num in board[row]:
         return False
@@ -36,7 +33,6 @@ def _is_valid_placement(board, row, col, num):
 
 
 def _solve(board):
-    """Backtracking solver — fills board in-place, returns True if solved."""
     for r in range(9):
         for c in range(9):
             if board[r][c] == 0:
