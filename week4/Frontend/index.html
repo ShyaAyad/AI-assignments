@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Genetic Sudoku Solver</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+
+  <!-- BOARD -->
+  <div class="board-section">
+    <h2>Genetic Sudoku Solver</h2>
+    <div id="board" class="board"></div>
+    <div class="buttons">
+      <button onclick="startSolve()">Start Evolution</button>
+      <button onclick="resetBoard()">Reset</button>
+      <button onclick="loadBoard()">New Board</button>
+    </div>
+    <p id="status-msg" class="status-msg"></p>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div class="panel">
+    <h3>Live Status</h3>
+    <div class="status-box">
+      <p>Generation: <span id="gen">0</span></p>
+      <p>Fitness: <span id="fitness">0</span> / 243</p>
+      <p>Status: <span id="job-status">Not Started</span></p>
+    </div>
+
+    <h3>Generation Registry</h3>
+    <div id="log" class="log"></div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
