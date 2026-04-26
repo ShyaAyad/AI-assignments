@@ -9,7 +9,7 @@ import random
 from crossover import crossover, fill_row
 from fitness import evaluate_fitness
 from mutation import mutate
-from ga import genetic_algorithm
+from ga_engine import genetic_algorithm
 
 app = FastAPI(title="Sudoku GA Solver")
 
