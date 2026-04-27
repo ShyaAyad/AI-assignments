@@ -1,225 +1,261 @@
+/* Apply to all elements */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  box-sizing: border-box; /* Includes padding & border inside element width/height */
+  margin: 0; /* Removes default margin */
+  padding: 0; /* Removes default padding */
 }
 
+/* Body styling */
 body {
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 20px;
+  font-family: Arial, sans-serif; /* Sets font */
+  background: #0f172a; /* Dark background */
+  color: white; /* Default text color */
+  min-height: 100vh; /* Full screen height */
+  display: flex; /* Use flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  padding: 40px 20px; /* Space inside body */
 }
 
+/* Main container holding board + panel */
 .container {
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
+  display: flex; /* Side-by-side layout */
+  gap: 40px; /* Space between board and panel */
+  align-items: flex-start; /* Align items at top */
 }
 
+/* Title of board section */
 .board-section h2 {
-  margin-bottom: 16px;
-  color: #a5b4fc;
-  font-size: 22px;
+  margin-bottom: 16px; /* Space below title */
+  color: #a5b4fc; /* Light purple color */
+  font-size: 22px; /* Font size */
 }
 
+/* Sudoku board grid */
 .board {
-  display: grid;
-  grid-template-columns: repeat(9, 52px);
-  grid-template-rows: repeat(9, 52px);
-  border: 3px solid #6366f1;
-  border-radius: 4px;
+  display: grid; /* Grid layout */
+  grid-template-columns: repeat(9, 52px); /* 9 columns */
+  grid-template-rows: repeat(9, 52px); /* 9 rows */
+  border: 3px solid #6366f1; /* Outer border */
+  border-radius: 4px; /* Rounded corners */
 }
 
+/* Each cell of Sudoku */
 .cell {
-  border-top: 1px solid #334155;
-  border-left: 1px solid #334155;
-  border-right: none;
-  border-bottom: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+  border-top: 1px solid #334155; /* Top border */
+  border-left: 1px solid #334155; /* Left border */
+  border-right: none; /* No right border */
+  border-bottom: none; /* No bottom border */
+  display: flex; /* Flex for centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  position: relative; /* Needed for future positioning */
 }
 
+/* Input inside each cell */
 .cell input {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  background: transparent;
-  border: none;
-  color: #e2e8f0;
-  font-size: 18px;
-  outline: none;
-  cursor: text;
+  width: 100%; /* Fill cell width */
+  height: 100%; /* Fill cell height */
+  text-align: center; /* Center text */
+  background: transparent; /* No background */
+  border: none; /* Remove border */
+  color: #e2e8f0; /* Light text color */
+  font-size: 18px; /* Font size */
+  outline: none; /* Remove outline on focus */
+  cursor: text; /* Text cursor */
 }
 
+/* When input is focused */
 .cell input:focus {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(99, 102, 241, 0.15); /* Light highlight */
 }
 
+/* Fixed (original puzzle) cells */
 .cell.fixed {
-  background: #0f1f3d;
+  background: #0f1f3d; /* Darker background */
 }
 
+/* Text inside fixed cells */
 .cell.fixed input {
-  color: #93c5fd;
-  font-weight: bold;
-  cursor: default;
+  color: #93c5fd; /* Blue color */
+  font-weight: bold; /* Bold text */
+  cursor: default; /* Not editable */
 }
 
+/* Cells filled by Genetic Algorithm */
 .cell.ga-filled input {
-  color: #86efac;
+  color: #86efac; /* Green text */
 }
 
+/* Invalid cells */
 .cell.invalid {
-  background: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.25); /* Red background */
 }
 
+/* Invalid cell text */
 .cell.invalid input {
-  color: #fca5a5;
+  color: #fca5a5; /* Light red text */
 }
 
+/* Thick border on right (for 3x3 boxes) */
 .cell.border-right {
   border-right: 2px solid #6366f1;
 }
 
+/* Thick border on bottom (for 3x3 boxes) */
 .cell.border-bottom {
   border-bottom: 2px solid #6366f1;
 }
 
+/* Buttons container */
 .buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-  flex-wrap: wrap;
+  display: flex; /* Flex layout */
+  gap: 10px; /* Space between buttons */
+  margin-top: 16px; /* Space above */
+  flex-wrap: wrap; /* Wrap if needed */
 }
 
+/* Button styling */
 button {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  background: #6366f1;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background 0.2s;
+  padding: 10px 18px; /* Inner spacing */
+  border: none; /* No border */
+  border-radius: 8px; /* Rounded corners */
+  background: #6366f1; /* Purple background */
+  color: white; /* Text color */
+  cursor: pointer; /* Pointer cursor */
+  font-size: 14px; /* Font size */
+  font-weight: bold; /* Bold text */
+  transition: background 0.2s; /* Smooth hover */
 }
 
+/* Button hover effect */
 button:hover {
-  background: #4f46e5;
+  background: #4f46e5; /* Darker purple */
 }
 
+/* Disabled button */
 button:disabled {
-  background: #334155;
-  cursor: not-allowed;
+  background: #334155; /* Gray background */
+  cursor: not-allowed; /* Disabled cursor */
 }
 
+/* Status message below buttons */
 .status-msg {
-  margin-top: 12px;
-  font-size: 14px;
-  color: #94a3b8;
-  min-height: 20px;
+  margin-top: 12px; /* Space above */
+  font-size: 14px; /* Font size */
+  color: #94a3b8; /* Gray color */
+  min-height: 20px; /* Prevent layout shift */
 }
 
+/* Right panel */
 .panel {
-  width: 260px;
+  width: 260px; /* Fixed width */
 }
 
+/* Panel headings */
 .panel h3 {
-  color: #a5b4fc;
-  margin-bottom: 10px;
-  margin-top: 20px;
-  font-size: 16px;
-  border-bottom: 1px solid #1e293b;
-  padding-bottom: 6px;
+  color: #a5b4fc; /* Light purple */
+  margin-bottom: 10px; /* Space below */
+  margin-top: 20px; /* Space above */
+  font-size: 16px; /* Font size */
+  border-bottom: 1px solid #1e293b; /* Divider line */
+  padding-bottom: 6px; /* Space under text */
 }
 
+/* Remove top margin for first heading */
 .panel h3:first-child {
   margin-top: 0;
 }
 
+/* Status box */
 .status-box {
-  background: #1e293b;
-  border-radius: 8px;
-  padding: 14px;
-  line-height: 2;
-  font-size: 14px;
+  background: #1e293b; /* Dark box */
+  border-radius: 8px; /* Rounded corners */
+  padding: 14px; /* Inner spacing */
+  line-height: 2; /* Line spacing */
+  font-size: 14px; /* Font size */
 }
 
+/* Highlighted values inside status */
 .status-box span {
-  color: #818cf8;
-  font-weight: bold;
+  color: #818cf8; /* Light purple */
+  font-weight: bold; /* Bold text */
 }
 
+/* Log container */
 .log {
-  background: #1e293b;
-  border-radius: 8px;
-  padding: 10px;
-  max-height: 340px;
-  overflow-y: auto;
-  font-size: 13px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  background: #1e293b; /* Dark background */
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; /* Inner spacing */
+  max-height: 340px; /* Limit height */
+  overflow-y: auto; /* Scroll vertically */
+  font-size: 13px; /* Font size */
+  display: flex; /* Flex layout */
+  flex-direction: column; /* Stack items */
+  gap: 4px; /* Space between entries */
 }
 
+/* Each log entry */
 .log-entry {
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: #0f172a;
-  color: #94a3b8;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: background 0.15s, outline 0.15s;
+  padding: 4px 8px; /* Inner spacing */
+  border-radius: 4px; /* Rounded corners */
+  background: #0f172a; /* Dark background */
+  color: #94a3b8; /* Gray text */
+  display: flex; /* Flex layout */
+  justify-content: space-between; /* Space between text */
+  cursor: pointer; /* Clickable */
+  transition: background 0.15s, outline 0.15s; /* Smooth hover */
 }
 
+/* Hover effect */
 .log-entry:hover {
-  background: #1e3a5f;
-  outline: 1px solid #6366f1;
+  background: #1e3a5f; /* Blue background */
+  outline: 1px solid #6366f1; /* Outline */
 }
 
+/* Active selected entry */
 .log-entry.active {
-  background: #312e81;
+  background: #312e81; /* Dark purple */
   outline: 1px solid #818cf8;
-  color: #e0e7ff;
+  color: #e0e7ff; /* Light text */
   font-weight: bold;
 }
 
+/* Best generation */
 .log-entry.best {
   background: #1e3a5f;
   color: #93c5fd;
 }
 
+/* Active + best */
 .log-entry.active.best {
   background: #1e3a8a;
 }
 
+/* Solved state */
 .log-entry.solved {
-  background: #14532d;
+  background: #14532d; /* Green */
   color: #86efac;
   font-weight: bold;
 }
 
+/* Active + solved */
 .log-entry.active.solved {
   background: #166534;
   outline: 1px solid #86efac;
 }
 
+/* Scrollbar width */
 .log::-webkit-scrollbar {
   width: 6px;
 }
 
+/* Scrollbar track */
 .log::-webkit-scrollbar-track {
   background: #0f172a;
 }
 
+/* Scrollbar thumb */
 .log::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 3px;

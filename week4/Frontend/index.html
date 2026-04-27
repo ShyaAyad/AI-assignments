@@ -1,42 +1,87 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
+<!-- Declares the document type as HTML5 -->
+
 <html lang="en">
+<!-- Root element of the page, language is English -->
+
 <head>
   <meta charset="UTF-8" />
+  <!-- Sets character encoding to support most languages -->
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Makes the page responsive on different screen sizes -->
+
   <title>Genetic Sudoku Solver</title>
+  <!-- Title shown in the browser tab -->
+
   <link rel="stylesheet" href="style.css" />
+  <!-- Links external CSS file for styling -->
 </head>
+
 <body>
+<!-- Main visible content of the webpage -->
 
 <div class="container">
+<!-- Main wrapper that contains everything -->
 
-  <!-- BOARD -->
+  <!-- BOARD SECTION -->
   <div class="board-section">
+    <!-- Section for Sudoku board and controls -->
+
     <h2>Genetic Sudoku Solver</h2>
+    <!-- Title displayed on the page -->
+
     <div id="board" class="board"></div>
+    <!-- Empty container where the Sudoku grid will be generated dynamically using JavaScript -->
+
     <div class="buttons">
+      <!-- Container for control buttons -->
+
       <button onclick="startSolve()">Start Evolution</button>
+      <!-- Button that starts the genetic algorithm (calls startSolve() in JS) -->
+
       <button onclick="resetBoard()">Reset</button>
+      <!-- Button that resets the Sudoku board -->
+
       <button onclick="loadBoard()">New Board</button>
+      <!-- Button that loads a new Sudoku puzzle -->
     </div>
+
     <p id="status-msg" class="status-msg"></p>
+    <!-- Paragraph to display messages like solving status -->
   </div>
 
   <!-- SIDE PANEL -->
   <div class="panel">
+    <!-- Right side panel for live info -->
+
     <h3>Live Status</h3>
+    <!-- Title for status section -->
+
     <div class="status-box">
+      <!-- Box containing real-time updates -->
+
       <p>Generation: <span id="gen">0</span></p>
+      <!-- Displays current generation number -->
+
       <p>Fitness: <span id="fitness">0</span> / 243</p>
+      <!-- Shows fitness score (max 243 for perfect Sudoku) -->
+
       <p>Status: <span id="job-status">Not Started</span></p>
+      <!-- Shows whether the algorithm is running or not -->
     </div>
 
     <h3>Generation Registry</h3>
+    <!-- Title for log section -->
+
     <div id="log" class="log"></div>
+    <!-- Container where generation logs will be displayed -->
   </div>
 
 </div>
 
 <script src="app.js"></script>
+<!-- Links JavaScript file that controls the logic -->
+
 </body>
 </html>
