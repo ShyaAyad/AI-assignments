@@ -17,7 +17,7 @@ for col in df.select_dtypes(include='object'):
     df[col] = df[col].fillna(df[col].mode()[0])
 
 
-# Encoding Categorical Daata
+# Encoding Categorical Data
 le = LabelEncoder()
 
 for col in df.select_dtypes(include='object'):
