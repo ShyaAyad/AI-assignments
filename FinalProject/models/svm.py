@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import joblib
 
 # Load Cleaned Data
 df = pd.read_csv("../data/StressLevelDatasetCleaned.csv")
@@ -38,6 +39,9 @@ y_pred = model.predict(X_test)
 mae = mean_absolute_error(y_test, y_pred)
 rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 r2 = r2_score(y_test, y_pred)
+
+joblib.dump(model, "../evaluation/svm_model.pkl")
+joblib.dump(scaler, "../evaluation/svm_scaler.pkl")
 
 print("SVM Regression Results")
 print("MAE:", mae)

@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import joblib
 
 # Load Cleaned Data
 df = pd.read_csv("../data/StressLevelDatasetCleaned.csv")
@@ -32,6 +33,8 @@ y_pred = model.predict(X_test)
 mae = mean_absolute_error(y_test, y_pred)
 rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 r2 = r2_score(y_test, y_pred)
+
+joblib.dump(model, "../evaluation/linear_regression_model.pkl")
 
 print("Linear Regression Results")
 print("MAE:", mae)
