@@ -4,25 +4,24 @@ import warnings
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use("Agg")          # non-interactive backend
+matplotlib.use("Agg")        
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.inspection import permutation_importance
 from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVR
-from tensorflow import keras
 import joblib
 
 warnings.filterwarnings("ignore")
 
-# ─── Paths ────────────────────────────────────────────────────────────────────
+# Paths
 BASE_DIR  = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR  = os.path.join(BASE_DIR, "data")
 EVAL_DIR  = os.path.dirname(os.path.abspath(__file__))
 PLOTS_DIR = os.path.join(EVAL_DIR, "plots")
 os.makedirs(PLOTS_DIR, exist_ok=True)
 
-# ─── Style ────────────────────────────────────────────────────────────────────
+# Style
 sns.set_theme(style="whitegrid", palette="muted")
 COLORS = {
     "Linear Regression": "#4C72B0",
@@ -31,9 +30,8 @@ COLORS = {
 }
 MODEL_NAMES = list(COLORS.keys())
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  1 ▸ METRICS CALCULATION
-# ══════════════════════════════════════════════════════════════════════════════
+
+# METRICS CALCULATION
 
 def build_metrics_table(lr_res, svm_res, nn_res) -> pd.DataFrame:
     rows = []
@@ -53,22 +51,22 @@ def print_metrics_table(df: pd.DataFrame):
     print(df.to_string())
     print("═"*55)
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  2 ▸ FEATURE IMPORTANCE LOGIC (The "Why")
-# ══════════════════════════════════════════════════════════════════════════════
+
+# FEATURE IMPORTANCE LOGIC (The "Why")
+
 
 def plot_feature_importance(X_test, y_test, model_lr, model_svm, model_nn):
     """Calculates and plots which features affect anxiety levels the most."""
     print("  Calculating feature importance (this may take a moment) ...")
     
-    # 1. Linear Regression Importance (Coefficients)
+    # Linear Regression Importance (Coefficients)
     lr_importance = np.abs(model_lr.coef_)
     
-    # 2. SVM Importance (Permutation)
+    # SVM Importance (Permutation)
     svm_perm = permutation_importance(model_svm, X_test, y_test, n_repeats=5, random_state=42)
     svm_importance = svm_perm.importances_mean
 
-    # 3. Neural Network Importance (Permutation)
+    # Neural Network Importance (Permutation)
     nn_perm = permutation_importance(model_nn, X_test, y_test, n_repeats=5, random_state=42)
     nn_importance = nn_perm.importances_mean
 
@@ -95,10 +93,7 @@ def plot_feature_importance(X_test, y_test, model_lr, model_svm, model_nn):
     plt.close()
     print(f"  [saved] {path}")
 
-# ══════════════════════════════════════════════════════════════════════════════
 #  MAIN RUNNER
-# ══════════════════════════════════════════════════════════════════════════════
-
 def run_comparison():
     print("\n" + "═"*55)
     print("          EVALUATION & COMPARISON MODULE")
@@ -142,14 +137,11 @@ def run_comparison():
 
         # Plot Metrics
         print("  Generating plots ...")
-        # (Standard plots: code truncated for brevity, same as previous version)
         
-        # --- NEW: Feature Importance Calculation ---
-        # We simulate/load models to get the 'Why'
         # Linear Regression
         model_lr = LinearRegression().fit(X, y) 
         
-        # SVM (Requires scaling like your svm.py)
+        # SVM 
         from sklearn.preprocessing import StandardScaler
         sc = StandardScaler()
         X_sc = sc.fit_transform(X)
@@ -157,16 +149,10 @@ def run_comparison():
         
         # Neural Network
         try:
-            model_nn = keras.models.load_model(os.path.join(EVAL_DIR, "neural_network_model.h5"))
-            # Wrap NN for permutation importance
-            class NNWrapper:
-                def __init__(self, m): self.m = m
-                def predict(self, data): return self.m.predict(data, verbose=0)
-                def get_params(self, deep=True): return {}
-            
-            plot_feature_importance(X_sc, y, model_lr, model_svm, NNWrapper(model_nn))
-        except:
-            print("  [skip] Could not load NN model file for importance.")
+            model_nn = joblib.load(os.path.join(EVAL_DIR, "neural_network_model.pkl"))
+            plot_feature_importance(X_sc, y, model_lr, model_svm, model_nn)
+        except Exception as e:
+            print(f"  [skip] Could not load NN model file for importance: {e}")
 
         print("\n  Comparison complete! Check the 'plots' folder.")
 
