@@ -3,9 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+from sklearn.neural_network import MLPRegressor
 import joblib
 
 # Load Cleaned Data
@@ -34,41 +32,27 @@ X_test = scaler.transform(X_test)
 
 joblib.dump(scaler, "scaler.pkl")
 
-# building neural network
-model = keras.Sequential([
-    layers.Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
-    layers.Dense(32, activation='relu'),
-    layers.Dense(1)
-])
-
-# compile the model 
-model.compile(
-    optimizer='adam',
-    loss='mse',
-    metrics=['mae']
-)
-
-early_stop = keras.callbacks.EarlyStopping(
-    monitor='val_loss',
-    patience=5,
-    restore_best_weights=True
-)
-
-# train model
-history = model.fit(
-    X_train, y_train,
-    validation_data=(X_val, y_val),
-    epochs=100,
+# building and training neural network using sklearn
+model = MLPRegressor(
+    hidden_layer_sizes=(64, 32),
+    activation='relu',
+    solver='adam',
     batch_size=16,
-    callbacks=[early_stop],
-    verbose=1
+    max_iter=100,
+    early_stopping=True,
+    n_iter_no_change=5,
+    random_state=42,
+    verbose=True
 )
+
+# train model (MLPRegressor handles validation internally if early_stopping=True, 
+# but here we just fit on train data)
+model.fit(X_train, y_train)
 
 # evaluate model
-test_loss, test_mae = model.evaluate(X_test, y_test, verbose=0)
-
 # Predictions
-y_pred = model.predict(X_test).flatten()
+y_pred = model.predict(X_test)
+test_mae = np.mean(np.abs(y_test - y_pred))
 
 # Metrics
 rmse = np.sqrt(mean_squared_error(y_test, y_pred))
@@ -79,13 +63,13 @@ print(f"MAE  : {test_mae:.4f}")
 print(f"RMSE : {rmse:.4f}")
 print(f"R2   : {r2:.4f}")
 
-model.save("neural_network_model.h5")
+joblib.dump(model, "../evaluation/neural_network_model.pkl")
 
 results = pd.DataFrame({
     "Actual": y_test.values,
-    "Predicted": y_pred.flatten()
+    "Predicted": y_pred
 })
 
-results.to_csv("nn_predictions.csv", index=False)
+results.to_csv("../data/nn_predictions.csv", index=False)
 
 print("\nModel and predictions saved successfully.")
