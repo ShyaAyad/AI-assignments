@@ -4,7 +4,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import joblib
+<<<<<<< HEAD
 import os
+=======
+>>>>>>> e3926927ceb0699a38e7423c81248fad250f5158
 
 # Load Cleaned Data
 df = pd.read_csv("../data/StressLevelDatasetCleaned.csv")
@@ -35,10 +38,14 @@ mae = mean_absolute_error(y_test, y_pred)
 rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 r2 = r2_score(y_test, y_pred)
 
+<<<<<<< HEAD
 # --- UPDATED PATH LOGIC ---
 save_path = r"C:\Users\WWW\Desktop\AI-assignments\AI-assignments\FinalProject\evaluation\linear_regression_model.pkl"
 joblib.dump(model, save_path)
 print(f"Model saved to: {save_path}")
+=======
+joblib.dump(model, "../evaluation/linear_regression_model.pkl")
+>>>>>>> e3926927ceb0699a38e7423c81248fad250f5158
 
 print("Linear Regression Results")
 print("MAE:", mae)

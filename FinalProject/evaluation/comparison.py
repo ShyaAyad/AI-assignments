@@ -45,11 +45,11 @@ def build_metrics_table(lr_res, svm_res, nn_res) -> pd.DataFrame:
     return pd.DataFrame(rows).set_index("Model")
 
 def print_metrics_table(df: pd.DataFrame):
-    print("\n" + "═"*55)
+    print("\n" + "="*55)
     print("          MODEL COMPARISON — TEST SET METRICS")
-    print("═"*55)
+    print("="*55)
     print(df.to_string())
-    print("═"*55)
+    print("="*55)
 
 
 # FEATURE IMPORTANCE LOGIC (The "Why")
