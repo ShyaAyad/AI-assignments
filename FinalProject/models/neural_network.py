@@ -63,7 +63,7 @@ print(f"MAE  : {test_mae:.4f}")
 print(f"RMSE : {rmse:.4f}")
 print(f"R2   : {r2:.4f}")
 
-joblib.dump(model, "../evaluation/neural_network_model.pkl")
+joblib.dump(scaler, "../evaluation/scaler.pkl")#goran
 
 results = pd.DataFrame({
     "Actual": y_test.values,
