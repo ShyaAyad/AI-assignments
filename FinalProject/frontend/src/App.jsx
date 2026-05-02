@@ -11,10 +11,9 @@ ChartJS.register(
   BarElement, Title, Tooltip, Legend, ScatterController
 )
 
-// ─── API base URL ─────────────────────────────────────────────────────────────
 const API_BASE = 'http://localhost:8000'
 
-// ─── Feature definitions (must match backend FEATURE_COLUMNS order) ───────────
+// feature definitions that match the ones in the backend
 const FEATURES = [
   { key: 'sleep_quality',               label: 'Sleep Quality',                min: 0, max: 5  },
   { key: 'headache',                    label: 'Headache',                     min: 0, max: 9  },
@@ -44,13 +43,9 @@ const MODEL_COLORS = {
   nn:  '#34c989',
 }
 
-// ─── Static training metrics loaded from backend prediction CSVs ──────────────
-// These are filled once via the /metrics endpoint (or computed from test CSVs).
-// We store them in state and fetch on mount.
-
 function clamp(v, lo = 0, hi = 21) { return Math.max(lo, Math.min(hi, v)) }
 
-// ─── Styles (identical to original) ──────────────────────────────────────────
+// styles 
 const S = {
   app: {
     minHeight: '100vh',
@@ -142,7 +137,7 @@ const S = {
   },
 }
 
-// ─── App ──────────────────────────────────────────────────────────────────────
+// app component
 export default function App() {
   const [tab, setTab]           = useState('predict')
   const [apiOnline, setApiOnline] = useState(false)
@@ -156,15 +151,10 @@ export default function App() {
 
   const [prediction, setPrediction] = useState(null)
   const [predLoading, setPredLoading] = useState(false)
-
-  // Metrics fetched from backend (via separate /metrics endpoint or defaults)
-  const [metrics, setMetrics]   = useState(null)
-  // Scatter test-set data fetched from backend
+  const [metrics, setMetrics] = useState(null)
   const [testData, setTestData] = useState(null)
-  // Feature importance fetched from backend
-  const [fi, setFI]             = useState(null)
+  const [fi, setFI] = useState(null)
 
-  // ── On mount: check API, then fetch static data ─────────────────────────────
   useEffect(() => {
     async function init() {
       try {
@@ -183,39 +173,42 @@ export default function App() {
         const r = await fetch(`${API_BASE}/features`)
         const d = await r.json()
         console.log('Backend features:', d.features)
-      } catch { /* non-fatal */ }
+      } catch { }
 
-      // Fetch metrics (our custom endpoint)
       try {
         const r = await fetch(`${API_BASE}/metrics`)
         if (r.ok) {
           const d = await r.json()
-          setMetrics(d)   // { lr:{mae,rmse,r2}, svm:{...}, nn:{...} }
+          setMetrics(d)
         }
-      } catch { /* endpoint may not exist yet — handled in CompareTab */ }
+      } catch {
+        console.log("Error occured in fetching metics")
+      }
 
-      // Fetch test-set scatter data
       try {
         const r = await fetch(`${API_BASE}/test_predictions`)
         if (r.ok) {
           const d = await r.json()
-          setTestData(d)  // { lr:{actual:[],predicted:[]}, svm:{...}, nn:{...} }
+          setTestData(d)
         }
-      } catch { /* handled in CompareTab */ }
+      } catch {
+        console.log("Error occured in fetching test-predictons")
+       }
 
-      // Fetch feature importance
       try {
         const r = await fetch(`${API_BASE}/feature_importance`)
         if (r.ok) {
           const d = await r.json()
-          setFI(d)        // { lr:[...], svm:[...], nn:[...] }  — 20 values each
+          setFI(d)
         }
-      } catch { /* handled in FeaturesTab */ }
+      } catch { 
+        console.log("Error occured in fetching feature-importance")
+       }
     }
     init()
   }, [])
 
-  // ── Predict whenever inputs change (debounced 300 ms) ──────────────────────
+  // predict whenever inputs change (debounced 300 ms)
   const debounceRef = useRef(null)
   const runPrediction = useCallback(async (inp) => {
     if (!apiOnline) return
@@ -351,7 +344,7 @@ export default function App() {
   )
 }
 
-// ─── Predict Tab ──────────────────────────────────────────────────────────────
+// Predict Tab 
 function PredictTab({ inputs, setInput, randomize, prediction, predLoading, apiOnline, severityLevel, severityLabel }) {
   const avg   = prediction?.avg
   const level = severityLevel(avg)
@@ -472,7 +465,7 @@ function PredictTab({ inputs, setInput, randomize, prediction, predLoading, apiO
   )
 }
 
-// ─── Compare Tab ──────────────────────────────────────────────────────────────
+// Compare Tab
 function CompareTab({ metrics, testData, apiOnline }) {
   const [activeScatter, setActiveScatter] = useState('lr')
 
@@ -677,7 +670,7 @@ function CompareTab({ metrics, testData, apiOnline }) {
   )
 }
 
-// ─── Features Tab ─────────────────────────────────────────────────────────────
+// Features Tab
 function FeaturesTab({ fi, apiOnline }) {
   const [activeModel, setActiveModel] = useState('lr')
 

@@ -35,12 +35,12 @@ joblib.dump(scaler, "scaler.pkl")
 # building and training neural network using sklearn
 model = MLPRegressor(
     hidden_layer_sizes=(64, 32),
-    activation='relu',
-    solver='adam',
-    batch_size=16,
-    max_iter=100,
-    early_stopping=True,
-    n_iter_no_change=5,
+    activation='relu', # the function it uses
+    solver='adam', # the algorithm used
+    batch_size=16, # train 16 students at once
+    max_iter=100, # have 100 epochs
+    early_stopping=True, # if model starts not to improve then stop it
+    n_iter_no_change=5, # 5 consecutive epochs with no improvement then stop training
     random_state=42,
     verbose=True
 )

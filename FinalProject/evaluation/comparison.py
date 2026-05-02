@@ -31,8 +31,7 @@ COLORS = {
 MODEL_NAMES = list(COLORS.keys())
 
 
-# METRICS CALCULATION
-
+# metric calculation
 def build_metrics_table(lr_res, svm_res, nn_res) -> pd.DataFrame:
     rows = []
     for name, res in zip(MODEL_NAMES, [lr_res, svm_res, nn_res]):
@@ -51,12 +50,7 @@ def print_metrics_table(df: pd.DataFrame):
     print(df.to_string())
     print("="*55)
 
-
-# FEATURE IMPORTANCE LOGIC (The "Why")
-
-
 def plot_feature_importance(X_test, y_test, model_lr, model_svm, model_nn):
-    """Calculates and plots which features affect anxiety levels the most."""
     print("  Calculating feature importance (this may take a moment) ...")
     
     # Linear Regression Importance (Coefficients)
@@ -93,7 +87,6 @@ def plot_feature_importance(X_test, y_test, model_lr, model_svm, model_nn):
     plt.close()
     print(f"  [saved] {path}")
 
-#  MAIN RUNNER
 def run_comparison():
     print("\n" + "═"*55)
     print("          EVALUATION & COMPARISON MODULE")
@@ -104,7 +97,6 @@ def run_comparison():
         df = pd.read_csv(os.path.join(DATA_DIR, "StressLevelDatasetCleaned.csv"))
         X = df.drop(columns=["anxiety_level"])
         y = df["anxiety_level"]
-        # Note: We use a simple split here just to have data to test importance
         from sklearn.model_selection import train_test_split
         _, X_test, _, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     except Exception as e:
