@@ -40,6 +40,10 @@ print("MAE:", mae)
 print("RMSE:", rmse)
 print("R2 Score:", r2)
 
+joblib.dump(model, "../evaluation/linear_regression_model.pkl")
+joblib.dump(X_test, "../evaluation/X_test_lr.pkl")
+joblib.dump(y_test, "../evaluation/y_test.pkl")
+
 # Save Results
 results = pd.DataFrame({
     "Actual": y_test,

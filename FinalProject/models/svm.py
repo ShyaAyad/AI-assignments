@@ -47,6 +47,11 @@ print("MAE:", mae)
 print("RMSE:", rmse)
 print("R2 Score:", r2)
 
+joblib.dump(model,  "../evaluation/svm_model.pkl")
+joblib.dump(scaler, "../evaluation/svm_scaler.pkl")
+joblib.dump(X_test, "../evaluation/X_test_svm.pkl")
+joblib.dump(y_test, "../evaluation/y_test.pkl")
+
 # Save Results
 results = pd.DataFrame({
     "Actual": y_test,

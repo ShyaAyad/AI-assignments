@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from sklearn.inspection import permutation_importance
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 app = Flask(__name__)
 CORS(app)
@@ -22,6 +24,11 @@ try:
 
     scaler_svm = joblib.load(os.path.join(EVAL_DIR, "svm_scaler.pkl"))
     scaler_nn = joblib.load(os.path.join(EVAL_DIR, "scaler.pkl"))
+    
+    X_test_lr  = joblib.load(os.path.join(EVAL_DIR, "X_test_lr.pkl"))
+    X_test_svm = joblib.load(os.path.join(EVAL_DIR, "X_test_svm.pkl"))
+    X_test_nn  = joblib.load(os.path.join(EVAL_DIR, "X_test_nn.pkl"))
+    y_test     = joblib.load(os.path.join(EVAL_DIR, "y_test.pkl"))
 
     # Feature names (Must be 20 features total)
     FEATURE_COLUMNS = [
@@ -36,8 +43,6 @@ except Exception as e:
     print(f"Error loading assets: {e}")
 
 # --- ROUTES ---
-
-
 @app.route("/", methods=["GET"])
 def health():
     return jsonify({"status": "ok"})
@@ -69,34 +74,47 @@ def predict_all():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-
+# dynamically calculate metrics
 @app.route("/metrics", methods=["GET"])
 def get_metrics():
-    # Your App.jsx expects keys: lr, svm, nn
+    def calc(actual, predicted):
+        return {
+            "mae":  round(float(mean_absolute_error(actual, predicted)), 3),
+            "rmse": round(float(np.sqrt(mean_squared_error(actual, predicted))), 3),
+            "r2":   round(float(r2_score(actual, predicted)), 3)
+        }
+
     return jsonify({
-        "lr": {"mae": 1.28, "rmse": 1.55, "r2": 0.842},
-        "svm": {"mae": 1.15, "rmse": 1.42, "r2": 0.881},
-        "nn": {"mae": 0.98, "rmse": 1.24, "r2": 0.915}
+        "lr":  calc(y_test, model_lr.predict(X_test_lr)),
+        "svm": calc(y_test, model_svm.predict(X_test_svm)),
+        "nn":  calc(y_test, model_nn.predict(X_test_nn))
     })
 
 
 @app.route("/test_predictions", methods=["GET"])
 def get_test_predictions():
-    # Your App.jsx expects: { lr: { actual: [], predicted: [] }, ... }
     try:
         path = os.path.join(DATA_DIR, "nn_predictions.csv")
         if os.path.exists(path):
-            df = pd.read_csv(path)
-            # Sampling 20 points for the scatter plot
-            sample = df.head(20)
-            actuals = sample['Actual'].tolist()
-            preds = sample['Predicted'].tolist()
+            
+            lr_df  = pd.read_csv(os.path.join(DATA_DIR, "linear_regression_results.csv"))
+            svm_df = pd.read_csv(os.path.join(DATA_DIR, "svm_results.csv"))
+            nn_df  = pd.read_csv(os.path.join(DATA_DIR, "nn_predictions.csv"))
 
             return jsonify({
-                "lr": {"actual": actuals, "predicted": [p * 0.95 for p in preds]},
-                "svm": {"actual": actuals, "predicted": [p * 1.02 for p in preds]},
-                "nn": {"actual": actuals, "predicted": preds}
-            })
+            "lr": {
+                "actual":    lr_df.head(20)['Actual'].tolist(),
+                "predicted": lr_df.head(20)['Predicted'].tolist()
+            },
+            "svm": {
+                "actual":    svm_df.head(20)['Actual'].tolist(),
+                "predicted": svm_df.head(20)['Predicted'].tolist()
+            },
+            "nn": {
+                "actual":    nn_df.head(20)['Actual'].tolist(),
+                "predicted": nn_df.head(20)['Predicted'].tolist()
+            }
+        })
     except Exception:
         pass
     return jsonify({"lr": {"actual": [], "predicted": []}, "svm": {"actual": [], "predicted": []}, "nn": {"actual": [], "predicted": []}})
@@ -104,15 +122,31 @@ def get_test_predictions():
 
 @app.route("/feature_importance", methods=["GET"])
 def get_feature_importance():
-    # Your App.jsx expects: { lr: [20 weights], svm: [...], nn: [...] }
     try:
-        # Using LR coefficients as a base for importance
-        weights = np.abs(model_lr.coef_)
-        normalized = (weights / weights.sum()).tolist()
+       # LR — use coefficients directly
+        lr_weights = np.abs(model_lr.coef_)
+        lr_normalized = (lr_weights / lr_weights.sum()).tolist()
+
+        # SVM — use permutation importance
+        svm_result = permutation_importance(
+            model_svm, X_test_svm, y_test,
+            n_repeats=10, random_state=42
+        )
+        svm_weights = np.abs(svm_result.importances_mean)
+        svm_normalized = (svm_weights / svm_weights.sum()).tolist()
+
+        # NN — use permutation importance
+        nn_result = permutation_importance(
+            model_nn, X_test_nn, y_test,
+            n_repeats=10, random_state=42
+        )
+        nn_weights = np.abs(nn_result.importances_mean)
+        nn_normalized = (nn_weights / nn_weights.sum()).tolist()
+
         return jsonify({
-            "lr": normalized,
-            "svm": normalized,
-            "nn": normalized
+            "lr":  lr_normalized,
+            "svm": svm_normalized,
+            "nn":  nn_normalized
         })
     except:
         # Fallback to equal weights if model isn't loaded
