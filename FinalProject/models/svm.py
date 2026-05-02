@@ -5,10 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import joblib
-<<<<<<< HEAD
-import os
-=======
->>>>>>> e3926927ceb0699a38e7423c81248fad250f5158
+
 
 # Load Cleaned Data
 df = pd.read_csv("../data/StressLevelDatasetCleaned.csv")
@@ -30,7 +27,7 @@ X_val, X_test, y_val, y_test = train_test_split(
 # Scaling
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
-X_val = scaler.transform(X_val)  
+X_val = scaler.transform(X_val)
 X_test = scaler.transform(X_test)
 
 # SVM Regression Model
@@ -44,19 +41,6 @@ y_pred = model.predict(X_test)
 mae = mean_absolute_error(y_test, y_pred)
 rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 r2 = r2_score(y_test, y_pred)
-
-<<<<<<< HEAD
-# --- UPDATED PATH LOGIC ---
-model_path = r"C:\Users\WWW\Desktop\AI-assignments\AI-assignments\FinalProject\evaluation\svm_model.pkl"
-scaler_path = r"C:\Users\WWW\Desktop\AI-assignments\AI-assignments\FinalProject\evaluation\svm_scaler.pkl"
-
-joblib.dump(model, model_path)
-joblib.dump(scaler, scaler_path)
-print(f"SVM Model and Scaler saved to evaluation folder.")
-=======
-joblib.dump(model, "../evaluation/svm_model.pkl")
-joblib.dump(scaler, "../evaluation/svm_scaler.pkl")
->>>>>>> e3926927ceb0699a38e7423c81248fad250f5158
 
 print("SVM Regression Results")
 print("MAE:", mae)
